@@ -123,7 +123,6 @@ export default function DroneManager() {
             </CardHeader>
             <div className="p-6">
               <DroneUpload
-                onFileUpload={handleFileUpload}
                 onLoadingChange={handleLoadingChange}
                 isLoading={isLoading}
               />
