@@ -40,11 +40,33 @@ export default function DroneManager() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   useEffect(() => {
-    // Load data from csv.json on mount
-    setDrones(csvData)
+    // Fetch persisted data on mount
+    fetch("/api/get-data")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setDrones(data)
+      })
+      .catch(() => {})
   }, [])
 
-  // Remove upload logic, keep all analytics and filter code unchanged
+  const handleFileUpload = async (fileData: any[], fileHeaders: string[]) => {
+    const dataWithCondition = fileData.map((drone) => ({
+      ...drone,
+      Condition:
+        drone["Broken code"] === "Broken"
+          ? "Bad"
+          : drone["Broken code"] === "Destroyed"
+          ? "Destroyed"
+          : "Good",
+    }))
+    setDrones(dataWithCondition)
+    // Persist data to server
+    await fetch("/api/save-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataWithCondition),
+    })
+  }
 
   const handleLoadingChange = (loading: boolean) => {
     setIsLoading(loading)
@@ -123,6 +145,7 @@ export default function DroneManager() {
             </CardHeader>
             <div className="p-6">
               <DroneUpload
+                onFileUpload={handleFileUpload}
                 onLoadingChange={handleLoadingChange}
                 isLoading={isLoading}
               />
