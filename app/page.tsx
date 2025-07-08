@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { DroneUpload } from "@/components/drone-upload"
 import { DroneDashboard } from "@/components/drone-dashboard"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,9 +18,10 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import csvData from "./csv.json";
 
 export default function DroneManager() {
-  const [drones, setDrones] = useState<any[]>([])
+  const [drones] = useState<any[]>(csvData);
 
   const [headers] = useState([
     "Drone QR Code ID",
@@ -37,41 +38,15 @@ export default function DroneManager() {
   const [isLoading, setIsLoading] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  useEffect(() => {
-    // Fetch persisted data on mount
-    fetch("/api/get-data")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setDrones(data)
-      })
-      .catch(() => {})
-  }, [])
-
-  const handleFileUpload = async (fileData: any[], fileHeaders: string[]) => {
-    const dataWithCondition = fileData.map((drone) => ({
-      ...drone,
-      Condition:
-        drone["Broken code"] === "Broken"
-          ? "Bad"
-          : drone["Broken code"] === "Destroyed"
-          ? "Destroyed"
-          : "Good",
-    }))
-    setDrones(dataWithCondition)
-    // Persist data to server
-    await fetch("/api/save-data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dataWithCondition),
-    })
-  }
+  // Remove useEffect and upload logic
+  // Keep all UI and analytics as is
 
   const handleLoadingChange = (loading: boolean) => {
     setIsLoading(loading)
   }
 
   const handleDeleteAllData = () => {
-    setDrones([])
+    // setDrones([]) // This line is removed as per the edit hint
     setShowDeleteConfirm(false)
   }
 
@@ -143,7 +118,7 @@ export default function DroneManager() {
             </CardHeader>
             <div className="p-6">
               <DroneUpload
-                onFileUpload={handleFileUpload}
+                // onFileUpload={handleFileUpload} // This line is removed as per the edit hint
                 onLoadingChange={handleLoadingChange}
                 isLoading={isLoading}
               />
