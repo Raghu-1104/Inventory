@@ -40,14 +40,19 @@ export default function DroneManager() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   useEffect(() => {
-    // Fetch persisted data on mount
-    fetch("/api/get-data")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setDrones(data)
-      })
-      .catch(() => {})
-  }, [])
+    // Normalize data from csv.json for analytics/filters
+    const normalized = csvData.map(drone => ({
+      ...drone,
+      "In/Out": drone["In/In-Transit"] || drone["In/Out"] || "In",
+      "Condition":
+        drone["Broken code"] === "Broken"
+          ? "Bad"
+          : drone["Broken code"] === "Destroyed"
+          ? "Destroyed"
+          : "Good",
+    }));
+    setDrones(normalized);
+  }, []);
 
   const handleFileUpload = async (fileData: any[], fileHeaders: string[]) => {
     const dataWithCondition = fileData.map((drone) => ({
