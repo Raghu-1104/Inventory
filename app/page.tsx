@@ -102,61 +102,10 @@ export default function DroneManager() {
             STUDIO TRIKA
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">Professional Drone Inventory Management System</p>
-
-          {drones.length > 0 && (
-            <div className="mt-6">
-              <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete All Data
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="dark:text-white">Delete All Inventory Data</AlertDialogTitle>
-                    <AlertDialogDescription className="dark:text-gray-300">
-                      This action cannot be undone. This will permanently delete all drone inventory data from the
-                      system.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteAllData}
-                      className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                    >
-                      Delete All Data
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          )}
         </div>
 
         <div className="space-y-8">
-          <Card className="border-2 border-dashed border-cyan-300 dark:border-cyan-600 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/50 dark:to-blue-950/50 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <CardTitle className="text-cyan-700 dark:text-cyan-300">Upload Additional Drone Data</CardTitle>
-              <CardDescription className="dark:text-gray-400">
-                Import Excel files to add more drones to your fleet
-              </CardDescription>
-            </CardHeader>
-            <div className="p-6">
-              <DroneUpload
-                onFileUpload={handleFileUpload}
-                onLoadingChange={handleLoadingChange}
-                isLoading={isLoading}
-              />
-            </div>
-          </Card>
-
+          {/* Upload and delete card removed */}
           <DroneDashboard drones={drones} headers={headers} />
         </div>
       </div>
