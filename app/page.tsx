@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import csvData from "./csv.json";
 import { DroneUpload } from "@/components/drone-upload"
 import { DroneDashboard } from "@/components/drone-dashboard"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,33 +40,11 @@ export default function DroneManager() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   useEffect(() => {
-    // Fetch persisted data on mount
-    fetch("/api/get-data")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setDrones(data)
-      })
-      .catch(() => {})
+    // Load data from csv.json on mount
+    setDrones(csvData)
   }, [])
 
-  const handleFileUpload = async (fileData: any[], fileHeaders: string[]) => {
-    const dataWithCondition = fileData.map((drone) => ({
-      ...drone,
-      Condition:
-        drone["Broken code"] === "Broken"
-          ? "Bad"
-          : drone["Broken code"] === "Destroyed"
-          ? "Destroyed"
-          : "Good",
-    }))
-    setDrones(dataWithCondition)
-    // Persist data to server
-    await fetch("/api/save-data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dataWithCondition),
-    })
-  }
+  // Remove upload logic, keep all analytics and filter code unchanged
 
   const handleLoadingChange = (loading: boolean) => {
     setIsLoading(loading)
