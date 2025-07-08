@@ -105,7 +105,7 @@ export default function DroneManager() {
         </div>
 
         <div className="space-y-8">
-          {/* Upload and delete card removed */}
+          {/* Upload and delete UI removed */}
           <DroneDashboard drones={drones} headers={headers} />
         </div>
       </div>
