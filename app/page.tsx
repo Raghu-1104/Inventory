@@ -42,12 +42,25 @@ export default function DroneManager() {
   useEffect(() => {
     // Normalize data from csv.json for analytics/filters
     const normalized = csvData.map(drone => {
-      let status = "Out";
-      const location = (drone["Current Location"] || "").toLowerCase();
-      if (location === "studio trika ware haous") {
-        status = "In";
-      } else if (location === "new zealand") {
-        status = "In Transit";
+      let status = undefined;
+      // Prefer the nested 'In.Out' field if it exists
+      if (drone["In"] && typeof drone["In"] === "object" && drone["In"].Out) {
+        status = String(drone["In"].Out).trim();
+        // Normalize to title case for consistency
+        if (status.toLowerCase() === "in") status = "In";
+        else if (status.toLowerCase() === "out") status = "Out";
+        else if (status.toLowerCase() === "in transit") status = "In Transit";
+      }
+      // If not present, use location-based mapping
+      if (!status) {
+        const location = (drone["Current Location"] || "").toLowerCase();
+        if (location === "studio trika ware haous" || location === "studio trika storage room") {
+          status = "In";
+        } else if (location === "new zealand") {
+          status = "In Transit";
+        } else {
+          status = "Out";
+        }
       }
       return {
         ...drone,
@@ -64,15 +77,35 @@ export default function DroneManager() {
   }, []);
 
   const handleFileUpload = async (fileData: any[], fileHeaders: string[]) => {
-    const dataWithCondition = fileData.map((drone) => ({
-      ...drone,
-      Condition:
-        drone["Broken code"] === "Broken"
-          ? "Bad"
-          : drone["Broken code"] === "Destroyed"
-          ? "Destroyed"
-          : "Good",
-    }))
+    const dataWithCondition = fileData.map((drone) => {
+      let status = undefined;
+      if (drone["In"] && typeof drone["In"] === "object" && drone["In"].Out) {
+        status = String(drone["In"].Out).trim();
+        if (status.toLowerCase() === "in") status = "In";
+        else if (status.toLowerCase() === "out") status = "Out";
+        else if (status.toLowerCase() === "in transit") status = "In Transit";
+      }
+      if (!status) {
+        const location = (drone["Current Location"] || "").toLowerCase();
+        if (location === "studio trika ware haous" || location === "studio trika storage room") {
+          status = "In";
+        } else if (location === "new zealand") {
+          status = "In Transit";
+        } else {
+          status = "Out";
+        }
+      }
+      return {
+        ...drone,
+        "In/Out": status,
+        Condition:
+          drone["Broken code"] === "Broken"
+            ? "Bad"
+            : drone["Broken code"] === "Destroyed"
+            ? "Destroyed"
+            : "Good",
+      };
+    });
     setDrones(dataWithCondition)
     // Persist data to server
     await fetch("/api/save-data", {
