@@ -28,30 +28,36 @@ export function DroneDashboard({ drones, headers }: DroneDashboardProps) {
   }, [])
 
   const analytics = useMemo(() => {
-    const total = filteredDrones.length
-    const goodCondition = filteredDrones.filter((drone) => drone.Condition === "Good").length
-    const badCondition = filteredDrones.filter((drone) => drone.Condition === "Bad").length
-    const destroyedCondition = filteredDrones.filter((drone) => drone.Condition === "Destroyed").length
-    const inStock = filteredDrones.filter((drone) => drone["In/Out"] === "In").length
-    const outStock = filteredDrones.filter((drone) => drone["In/Out"] === "Out").length
+    // Only include drones whose status was set from the nested In.Out field
+    const statusFromInOut = filteredDrones.filter(drone => {
+      // If the original drone object had a nested In.Out field, mark it
+      return drone["In"] && typeof drone["In"] === "object" && typeof drone["In"].Out === "string" && drone["In"].Out.trim() !== "";
+    });
 
-    const categories = filteredDrones.reduce(
+    const total = statusFromInOut.length;
+    const goodCondition = statusFromInOut.filter((drone) => drone.Condition === "Good").length;
+    const badCondition = statusFromInOut.filter((drone) => drone.Condition === "Bad").length;
+    const destroyedCondition = statusFromInOut.filter((drone) => drone.Condition === "Destroyed").length;
+    const inStock = statusFromInOut.filter((drone) => drone["In/Out"] === "In").length;
+    const outStock = statusFromInOut.filter((drone) => drone["In/Out"] === "Out").length;
+
+    const categories = statusFromInOut.reduce(
       (acc, drone) => {
-        const category = drone.Category || "Unknown"
-        acc[category] = (acc[category] || 0) + 1
-        return acc
+        const category = drone.Category || "Unknown";
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
       },
       {} as Record<string, number>,
-    )
+    );
 
-    const locations = filteredDrones.reduce(
+    const locations = statusFromInOut.reduce(
       (acc, drone) => {
-        const location = drone["Current Location"] || "Unknown"
-        acc[location] = (acc[location] || 0) + 1
-        return acc
+        const location = drone["Current Location"] || "Unknown";
+        acc[location] = (acc[location] || 0) + 1;
+        return acc;
       },
       {} as Record<string, number>,
-    )
+    );
 
     return {
       total,
@@ -62,8 +68,8 @@ export function DroneDashboard({ drones, headers }: DroneDashboardProps) {
       outStock,
       categories,
       locations,
-    }
-  }, [filteredDrones])
+    };
+  }, [filteredDrones]);
 
   return (
     <div className="space-y-6">
