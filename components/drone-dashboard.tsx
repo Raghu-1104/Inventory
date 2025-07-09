@@ -39,7 +39,8 @@ export function DroneDashboard({ drones, headers }: DroneDashboardProps) {
     const badCondition = statusFromInOut.filter((drone) => drone.Condition === "Bad").length;
     const destroyedCondition = statusFromInOut.filter((drone) => drone.Condition === "Destroyed").length;
     const inStock = statusFromInOut.filter((drone) => drone["In/Out"] === "In").length;
-    const outStock = statusFromInOut.filter((drone) => drone["In/Out"] === "Out").length;
+    // Count both 'Out' and 'In Transit' as 'Out'
+    const outStock = statusFromInOut.filter((drone) => drone["In/Out"] === "Out" || drone["In/Out"] === "In Transit").length;
 
     const categories = statusFromInOut.reduce(
       (acc, drone) => {
