@@ -65,7 +65,7 @@ export function DroneAnalytics({ analytics, drones, transitCount, showChartsOnly
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent = 0 }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {conditionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -95,7 +95,7 @@ export function DroneAnalytics({ analytics, drones, transitCount, showChartsOnly
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent = 0 }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {statusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -172,7 +172,7 @@ export function DroneAnalytics({ analytics, drones, transitCount, showChartsOnly
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-700 text-sm font-medium">Drones-SFC</p>
+                <p className="text-gray-700 text-sm font-medium">Drones-SFC (Subject to Flight Check)</p>
                 <p className="text-3xl font-bold">{analytics.goodCondition}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-gray-700" />
@@ -251,7 +251,7 @@ export function DroneAnalytics({ analytics, drones, transitCount, showChartsOnly
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent = 0 }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {conditionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -281,7 +281,7 @@ export function DroneAnalytics({ analytics, drones, transitCount, showChartsOnly
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent = 0 }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {statusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
