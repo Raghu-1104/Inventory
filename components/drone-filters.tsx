@@ -130,7 +130,7 @@ export function DroneFilters({ drones, onFilterChange }: DroneFiltersProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Conditions</SelectItem>
-              <SelectItem value="Good">Good</SelectItem>
+              <SelectItem value="Good">Drones-SFC</SelectItem>
               <SelectItem value="Bad">Bad</SelectItem>
               <SelectItem value="Destroyed">Destroyed</SelectItem>
             </SelectContent>
