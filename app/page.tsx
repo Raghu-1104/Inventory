@@ -41,16 +41,25 @@ export default function DroneManager() {
 
   useEffect(() => {
     // Normalize data from csv.json for analytics/filters
-    const normalized = csvData.map(drone => ({
-      ...drone,
-      "In/Out": drone["In/In-Transit"] || drone["In/Out"] || "In",
-      "Condition":
-        drone["Broken code"] === "Broken"
-          ? "Bad"
-          : drone["Broken code"] === "Destroyed"
-          ? "Destroyed"
-          : "Good",
-    }));
+    const normalized = csvData.map(drone => {
+      let status = "Out";
+      const location = (drone["Current Location"] || "").toLowerCase();
+      if (location === "studio trika ware haous") {
+        status = "In";
+      } else if (location === "new zealand") {
+        status = "In Transit";
+      }
+      return {
+        ...drone,
+        "In/Out": status,
+        "Condition":
+          drone["Broken code"] === "Broken"
+            ? "Bad"
+            : drone["Broken code"] === "Destroyed"
+            ? "Destroyed"
+            : "Good",
+      };
+    });
     setDrones(normalized);
   }, []);
 
